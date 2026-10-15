@@ -1,0 +1,59 @@
+/* A parchment is one scrolling surface. Its background is attached to its
+   entire scrollable content, and headings/actions travel with that surface. */
+html body.game-skin #townOverlay{height:auto!important;max-height:50dvh!important;}
+html body.game-skin #townOverlay.show #townContent.town-sheet{
+ display:block!important;height:auto!important;min-height:0!important;
+ max-height:50dvh!important;overflow-y:auto!important;overflow-x:hidden!important;
+ overscroll-behavior:contain;touch-action:pan-y;
+}
+html body.game-skin #townContent.town-sheet>.town-body{
+ display:block!important;flex:none!important;min-height:0!important;
+ height:auto!important;max-height:none!important;overflow:visible!important;
+ padding-bottom:0!important;
+}
+html body.game-skin #townContent :is(.town-header,.town-section-tabs,.town-action-dock){
+ position:relative!important;top:auto!important;bottom:auto!important;
+ flex:none!important;transform:none!important;
+}
+html body.game-skin #townContent .town-stock-list{
+ max-height:none!important;overflow:visible!important;
+}
+html body.game-skin .tab-panel:not([data-tab=map]){
+ height:auto!important;min-height:0!important;max-height:50dvh!important;
+ overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;
+}
+html body.game-skin[data-ui-theme=default] :is(
+ #townContent.town-sheet,.tab-panel:not([data-tab=map]),.event-modal-card,
+ #playerProfileForm,#previewMenu,#mapDispatchDock,#mapControlDock,
+ #manualGuidePanel,#chapterDialog section
+){
+ background-attachment:local!important;
+ background-origin:border-box!important;background-clip:border-box!important;
+ background-size:100% 100%!important;
+ box-sizing:border-box;overflow-wrap:anywhere;
+}
+html body.game-skin :is(#previewMenu,#manualGuidePanel){
+ height:auto!important;min-height:0!important;max-height:50dvh!important;
+ overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain;
+}
+html body.game-skin #manualGuidePanel .manual-guide-body{
+ overflow:visible!important;max-height:none!important;flex:none!important;
+}
+html body.game-skin.manual-quest-open #chapterDialog{
+ height:auto!important;max-height:50dvh!important;
+}
+html body.game-skin.manual-quest-open #chapterDialog section{
+ height:auto!important;min-height:0!important;max-height:50dvh!important;
+ background-attachment:local!important;
+}
+html body.game-skin.manual-quest-open #chapterDialog .chapter-close{
+ position:relative!important;top:auto!important;
+}
+html body.game-skin #previewPanelClose{
+ bottom:calc(var(--parchment-visible-height,50dvh) - 43px)!important;
+}
+@media(max-width:360px){
+ html body.game-skin[data-ui-theme=default] :is(#townContent.town-sheet,.tab-panel:not([data-tab=map]),#previewMenu){
+  padding-inline:22px!important;
+ }
+}
