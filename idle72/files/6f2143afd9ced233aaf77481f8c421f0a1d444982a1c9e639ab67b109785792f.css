@@ -1,0 +1,572 @@
+/* UI redesign (owner's picks, see ui-lab): Saray panels (jade leather + gold), candy buttons in the Saray palette,
+   gold-pill top bar with an anvil upgrades medallion, jade medallion bottom bar on a frosted box, mission medallion,
+   parchment town tags, liquid-gold bars, animated celebrations, coin-bag welcome back, sun-ray title screen. */
+:root{--cream:#f5e6bf;--muted:#cdbf97;--goldtext:#f2cd6b;--gold:#e2bd63;--gold2:#a98538}
+@keyframes liquid{from{background-position:200% 0}to{background-position:-200% 0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bump{50%{transform:scale(1.14)}}
+
+/* ---------- Saray surfaces ---------- */
+.phone #sheet,.phone #sheet:not(:has(.region-confirm)),dialog,#notice,#guideStrip{border:0;color:var(--cream);background:radial-gradient(circle at 25% 8%,#2f5c47,#1b392b 70%) #1b392b;box-shadow:0 0 0 2px #e2bd63,0 0 0 5px #1b392b,0 0 0 7px #a98538,0 12px 26px #000a}
+.phone #sheet:not(:has(.region-confirm)){bottom:102px;border-radius:14px}
+#options{bottom:102px}
+dialog{border-radius:14px}dialog h2,dialog h3,#sheet h3,#sheet .shop-town h4,#sheet .prestige h4{color:var(--goldtext);text-shadow:0 2px 0 #0008}
+dialog p,#sheet p,#sheet .small,#goalsDialog small,.unlock-reason{color:var(--muted)}
+dialog::backdrop,#resetDialog::backdrop,#prestigeDialog::backdrop,#awayDialog::backdrop{background:#0b1a12b8}
+.sheet-grip,#sheet .close{background:#24473a}.sheet-grip span{background:#e2bd6377}#sheet .close,#closeGoals{color:var(--goldtext)}
+#sheet details,#sheet .trip{border-top-color:#e2bd6333}#sheet summary{color:var(--cream)}
+#sheet .chip{background:#0000004d;border:1px solid #e2bd6355;color:#f6e2a8}#sheet .chip.gold{background:#e2bd6333}
+#sheet .tip{background:#0000004d;color:#f6e2a8;box-shadow:inset 0 0 0 1px #e2bd6344}
+#sheet .worker img{border-color:var(--gold)}#sheet .requirements .done{color:#a6dc80}#sheet .hint{background:#0000004d}
+#sheet .mline{background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6333}#sheet .market-line{border-bottom-color:#e2bd6333}
+#sheet .shop-region{color:var(--goldtext)}#sheet .shop-town{border-color:#e2bd6344;background:#00000026}#sheet .shop-item small{color:var(--muted)}#sheet .shop-item+.shop-item{border-top-color:#e2bd6326}
+#sheet .buy-mode{background:#0000004d}#sheet .buy-mode button{color:var(--cream)}
+#sheet .prestige{border-color:#e2bd6388;background:#e2bd631a}
+#notice{border-radius:12px;font-weight:700}
+#guideStrip{border-radius:12px;font-size:12px;padding:8px 10px}
+
+/* ---------- Candy buttons: jade = do, gold = spend ---------- */
+#sheet .action,#prestigeDialog #prestigeGo,#resetDialog #confirmReset,#options #closeOptions,#awayDialog button,#cloudDialog #cloudUse,#goalsDialog #showMission,.region-confirm #enterRegion,#welcome #startPlaying,#goalStrip #claimGoal{border:0;border-radius:13px;font:800 13px Nunito,'Segoe UI',sans-serif;color:#fff;background:linear-gradient(#5fbf86,#2b7a52);box-shadow:0 4px 0 #164a30,0 6px 10px #0006,inset 0 2px 0 #a8e8c0;text-shadow:0 1px 0 #164a30;transition:transform .08s,box-shadow .08s}
+/* Building output per cycle (town panel). */
+#sheet .out-line{display:flex;align-items:center;gap:5px;margin:0 0 6px;font:800 13px/1 Nunito,sans-serif;color:#f4d686}#sheet .out-line img{width:18px;height:18px;object-fit:contain}
+/* Soft pointer (experience.js hint): a gentler glow than the tutorial's guide-target. */
+.hint-target{outline:3px solid #ffe27a!important;outline-offset:3px;box-shadow:0 0 0 4px #ffd04a66,0 0 20px 6px #ffcf4acc!important;animation:hintPulse 1.1s ease-in-out infinite}
+@keyframes hintPulse{0%,100%{outline-color:#ffe27a;filter:brightness(1)}50%{outline-color:#fff6c8;filter:brightness(1.28)}}
+.no-ambient .hint-target{animation:none}
+@media(prefers-reduced-motion:reduce){.hint-target{animation:none}}
+#fpsMeter{position:absolute;left:8px;bottom:calc(var(--kv-bottom,0px) + 96px);z-index:50;padding:3px 7px;border-radius:8px;font:800 11px/1.2 Nunito,monospace;color:#bff5c4;background:#000a;pointer-events:none;white-space:nowrap}
+#options #optionsX{position:absolute;top:8px;right:8px;width:44px;height:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:50%;font:700 26px/44px Nunito,sans-serif;color:var(--goldtext);background:#24473a;box-shadow:inset 0 0 0 1px #e2bd6366;z-index:2}
+#updateDialog{max-width:300px;text-align:center}#updateDialog button{display:block;width:100%;min-height:44px;margin-top:8px}#updateDialog #updateGo{border:0;border-radius:13px;font:800 14px Nunito,'Segoe UI',sans-serif;color:#4a2f0a;background:linear-gradient(#ffe08a,#e2a93a);box-shadow:0 4px 0 #8a5a14}#updateDialog #updateLater{border:0;border-radius:12px;color:var(--cream);background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6366}#updateDialog::backdrop{background:#0b1a12b8}
+#sheet .action:active:not(:disabled),#prestigeDialog #prestigeGo:active,#resetDialog #confirmReset:active,#awayDialog button:active,#welcome #startPlaying:active,#goalStrip #claimGoal:active{transform:translateY(3px);box-shadow:0 1px 0 #164a30,0 2px 4px #0006,inset 0 2px 0 #a8e8c0}
+#sheet .action.upgrade,#sheet .prestige .action,#prestigeDialog #prestigeGo,#awayDialog button,#welcome #startPlaying,#goalStrip #claimGoal,#sheet .buy-mode button[aria-pressed=true]{color:#4a2f0a;background:linear-gradient(#ffe08a,#e2a93a);box-shadow:0 4px 0 #8a5a14,0 6px 10px #0006,inset 0 2px 0 #fff3c0;text-shadow:0 1px 0 #fff3c0}
+#sheet .action.upgrade:active:not(:disabled),#awayDialog button:active,#welcome #startPlaying:active,#goalStrip #claimGoal:active{box-shadow:0 1px 0 #8a5a14,0 2px 4px #0006,inset 0 2px 0 #fff3c0}
+#sheet .buy-mode button[aria-pressed=true]{box-shadow:0 2px 0 #8a5a14,inset 0 1px 0 #fff3c0}
+#sheet .action:disabled,#sheet .prestige .action:disabled{color:#dfe5dc;background:linear-gradient(#8d9c90,#5f6f63);box-shadow:0 4px 0 #3d4a41,inset 0 2px 0 #b9c5bc;text-shadow:none;cursor:default}
+/* Secondary choices stay quiet. */
+#prestigeDialog #prestigeCancel,#resetDialog #cancelReset,#options #newGame,#options #soundToggle,#options #languageToggle,.region-confirm #cancelRegion{border:0;border-radius:12px;color:var(--cream);background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6366;text-shadow:none}
+#closeGoals{background:none!important;box-shadow:none!important}
+/* Green upgrade arrow used on upgrade buttons and the upgrades medallion. */
+.arwrap{display:inline-flex;vertical-align:-2px;margin:0 3px 0 0;filter:drop-shadow(0 1.5px 0 #1b4a12)}.arw{display:block;width:13px;height:14px;background:linear-gradient(#c4f58a,#5fb33a 55%,#3a8424);clip-path:polygon(50% 0,100% 52%,68% 52%,68% 100%,32% 100%,32% 52%,0 52%)}
+
+/* ---------- Liquid-gold bars ---------- */
+#sheet .job-progress,#sheet .meter .bar{height:10px;border:0;border-radius:6px;background:#0009;box-shadow:0 0 0 1.5px #e2bd63aa}
+#sheet .job-progress>span,#sheet .meter .bar i{position:relative;overflow:hidden;background:linear-gradient(90deg,#c99a3a,#f2d27a)}
+#sheet .job-progress.running>span::after,#sheet .meter .bar i::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,#0000 30%,#fffbe0a0 50%,#0000 70%);background-size:200% 100%;animation:liquid 1.8s linear infinite}
+#sheet .job-progress:not(.running){opacity:.6}#sheet .meter.full .bar i{background:linear-gradient(90deg,#c8582f,#f29a5a)}#sheet .meter b{color:var(--cream)}
+
+/* ---------- Top bar: floating region name, gold pill, level star, anvil medallion ---------- */
+header{align-items:flex-start;padding:12px 12px 0}
+header>div{background:none;border:0;box-shadow:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:7px}
+header h2{color:#fff;text-shadow:0 2px 3px #000a,0 0 2px #000;line-height:1.2}
+#goldHud{position:relative;display:inline-flex;align-items:baseline;gap:6px;margin:0;padding:2px 13px 2px 34px;border-radius:20px;background:linear-gradient(#2a1d10,#3c2a16);box-shadow:0 0 0 2px #e2bd63,0 4px 10px #0008;color:#ffe08a;font-size:17px;white-space:nowrap}
+#goldHud::before{content:'';position:absolute;left:-10px;top:50%;width:38px;height:38px;transform:translateY(-50%);background:url('../assets/nano-art/gold.webp') center/contain no-repeat;filter:drop-shadow(0 2px 2px #0008)}
+#goldHud.bump{animation:bump .3s}#saleFeedback{left:0;right:0;top:92px;text-align:center;font-size:13px}
+header #goldHud #incomeHud{display:inline;font-size:10px;min-height:0;color:#cfe3a6}
+header button,#back,#settings{width:42px;min-width:42px;height:42px;min-height:42px;padding:0;border:0;border-radius:11px;font-size:0;color:transparent;background:#000000a8 center/27px no-repeat;box-shadow:0 0 0 2px #e2bd63,0 3px 8px #0007}
+#back{background-image:url('../assets/nano-art/map.webp')}#back span{display:none}
+#settings{background-image:url('../assets/nano-art/gear.webp')}
+#shop{position:relative;width:46px;min-width:46px;height:46px;margin:-2px 10px 0 0;border-radius:50%;background:radial-gradient(#3c2a16,#1d140a);box-shadow:0 0 0 3px #e2bd63,0 0 0 5px #1b392b,0 4px 10px #0009}
+#shop>img{width:30px;height:30px;object-fit:contain}
+#shop .mini{position:absolute;right:-4px;bottom:-4px;width:20px;height:20px;border-radius:50%;background:#1b392b;box-shadow:0 0 0 2px #e2bd63;display:flex;align-items:center;justify-content:center}#shop .mini .arwrap{margin:0}#shop .mini .arw{width:10px;height:11px}
+#shop .badge{position:absolute;top:-6px;right:-6px;min-width:19px;height:19px;padding:0 4px;border-radius:10px;background:#d8402c;color:#fff;font:900 11px/19px Nunito,sans-serif;box-shadow:0 0 0 2px #fff3c0,0 2px 4px #0007;animation:bump 1.2s ease-in-out 3}#shop .badge[hidden]{display:none}
+#sheet .worker .action img.ico{width:16px;height:16px;border:0;border-radius:0}#sheet summary.unbuilt svg{opacity:.8;filter:grayscale(.55) brightness(1.15)}
+#playerBadge{left:58px;top:12px;width:40px;height:40px;min-width:0;padding:4px 0 0;border:0;border-radius:0;background:url('../assets/nano-art/level.webp') center/contain no-repeat;color:#4a2f0a;font:900 13px Nunito,sans-serif;text-shadow:0 1px 0 #ffeeb0;filter:drop-shadow(0 2px 3px #000a)}
+.phone:has(#back[hidden]) #playerBadge{left:12px}
+#cameraControls button{border:0;background:#000000a8;box-shadow:0 0 0 1.5px #e2bd63cc,0 2px 7px #0006;color:var(--goldtext)}
+
+/* ---------- Bottom bar: jade medallions on a frosted cream box ---------- */
+#nav{left:50%;right:auto;transform:translateX(-50%);bottom:12px;height:auto;max-width:calc(100% - 16px);padding:8px 10px 4px;gap:4px;border-radius:22px;background:#e8d3a2c4;box-shadow:0 0 0 1.5px #e2bd6399,0 6px 14px #0005}
+#nav button,#nav button.active{flex:0 0 auto;width:62px;padding:0;border:0;border-radius:0;background:none;box-shadow:none;display:flex;flex-direction:column;align-items:center;gap:3px;overflow:visible;white-space:nowrap;color:#fff;font:800 10px Nunito,sans-serif;text-shadow:0 1px 2px #000,0 0 2px #000}
+#nav img{width:30px;height:30px;margin:0;padding:11px;box-sizing:content-box;border-radius:50%;background:radial-gradient(#f6e7c2,#d7bf8a);transition:transform .2s,filter .2s}
+#nav button::before{content:'';position:absolute;top:-4px;left:50%;width:60px;height:60px;margin-left:-30px;background:url('../assets/nano-art/frame-jade.webp') center/contain no-repeat;pointer-events:none;transition:transform .2s;z-index:1}
+#nav button.active img,#nav button.active::before{transform:translateY(-6px) scale(1.06)}#nav button.active img{filter:drop-shadow(0 0 8px #f2cd6b)}#nav button.active{color:var(--goldtext)}
+#nav .queue-badge{top:-6px;right:2px;z-index:2;border-radius:10px;min-width:20px;padding:0 4px;background:linear-gradient(#ffe08a,#e2a93a);border:0;box-shadow:0 0 0 2px #4a2f0a;color:#4a2f0a;font-size:11px;font-weight:900;text-shadow:none}
+#nav .world-instruction{background:none;padding:6px 12px 8px;color:#fff;font-weight:800;font-size:12px;text-shadow:0 1px 2px #000,0 0 2px #000}
+
+/* ---------- Mission medallion (tap to open; opens by itself when the reward is ready) ---------- */
+#goalStrip{left:12px;right:auto;top:110px;max-width:calc(100% - 140px);display:flex;align-items:center;gap:0;padding:0;min-height:0;border:0;background:none;color:#f6e7c2}
+#goalStrip #missionMedal{position:relative;flex:0 0 auto;width:58px;height:58px;padding:0;z-index:2}
+#missionMedal::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(#3c2a16,#1d140a);box-shadow:0 4px 10px #0009}
+#missionMedal svg{position:absolute;inset:0;transform:rotate(-90deg)}#missionMedal svg .ring{transition:stroke-dashoffset .4s}
+#missionMedal img{position:absolute;inset:14px;width:30px;height:30px;object-fit:contain}
+#goalStrip.ready #missionMedal{animation:bump 1.4s ease-in-out 3}#goalStrip.ready #missionMedal .ring{stroke:#9be36a}
+#goalStrip .mpill{display:flex;align-items:center;gap:6px;min-width:0;margin-left:-24px;padding:4px 5px 4px 30px;border-radius:0 20px 20px 0;background:#1d140af0;box-shadow:0 0 0 2px #e2bd63,0 4px 10px #0007;max-width:0;opacity:0;overflow:hidden;white-space:nowrap;transition:max-width .35s,opacity .25s}
+#goalStrip.open .mpill{max-width:300px;opacity:1}
+#goalStrip #openGoals{flex:1;min-width:0;padding:4px 6px 4px 0;text-align:left;font:700 12px Nunito,sans-serif;color:#f6e7c2}#goalStrip .mtitle{display:block;overflow:hidden;text-overflow:ellipsis}
+#goalStrip #claimGoal{flex:0 0 auto;min-height:30px;max-width:none;padding:0 10px;border-radius:15px;font-size:12px}
+
+/* ---------- Parchment town tags (SVG, built in app.js) ---------- */
+svg text.town-name{fill:#4a3420;stroke:none;font-size:9.5px}
+.town-name-frame{fill:url(#tagFill);fill-opacity:1;stroke:#a98538;stroke-opacity:1;stroke-width:1.3}
+.tag-badge{fill:#f6e7c2;stroke:#e2bd63;stroke-width:1.3;vector-effect:non-scaling-stroke}
+#scene .locked-town .town-name{fill:#6b5a40}
+svg text.town-role{fill:#ffe08a;stroke:#2a1d10;stroke-width:3px;paint-order:stroke;font-size:11px}
+
+/* ---------- Celebrations ---------- */
+#celebration{position:absolute;inset:0;z-index:25;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}#celebration[hidden]{display:none}
+.cel-dim{position:absolute;inset:0;background:#000;opacity:.68;animation:celDim .25s ease both}
+@keyframes celDim{from{opacity:0}}
+#celebration>:not(.cel-dim):not(.cel-rays):not(.cel-flash):not(.cel-coin):not(.cel-dust){position:relative}
+#celebration.out>*{transition:opacity .3s;opacity:0}
+.cel-rays{position:absolute;left:50%;top:50%;width:460px;height:460px;margin:-260px 0 0 -230px;border-radius:50%;background:repeating-conic-gradient(#ffe7a033 0 9deg,#0000 9deg 20deg);-webkit-mask:radial-gradient(#000 25%,#0000 68%);mask:radial-gradient(#000 25%,#0000 68%);animation:spin 6s linear infinite}
+.cel-ribbon{width:250px;animation:celPop .6s cubic-bezier(.2,1.6,.4,1) both}.cel-ribbon img{width:100%;display:block}
+.cel-ribbon b{position:absolute;left:30px;right:30px;top:53%;font:400 22px Bree,Georgia,serif;color:#fff6dc;text-shadow:0 2px 0 #5e1e14;white-space:nowrap}.cel-ribbon b.long{font-size:16px;top:55%}
+.cel-sub{margin:10px 24px 0;font-weight:800;font-size:14px;color:#ffe08a;text-shadow:0 2px 3px #000;animation:celUp .5s .45s both}
+@keyframes celPop{0%{transform:scale(0)}100%{transform:scale(1)}}@keyframes celUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.cel-coin{position:absolute;width:24px;height:24px;z-index:26;pointer-events:none}
+.cel-card{width:270px;padding:26px 18px 34px;color:#3a210c;border:3px solid #8a5a14;background:url('../assets/parchment-panel-v1.webp') center/cover;border-radius:6px;box-shadow:0 10px 20px #0009;animation:celCard .4s ease-out both,celShake .3s .95s}
+.cel-card b{display:block;font:400 25px Bree,Georgia,serif;color:#3a210c}.cel-card span{display:block;margin-top:6px;font-weight:900;font-size:17px;color:#2b1a0a}
+.cel-seal{position:absolute;right:-20px;bottom:-34px;width:80px;animation:celSlam .35s .6s cubic-bezier(.5,0,.7,1) both}
+@keyframes celCard{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}@keyframes celSlam{from{opacity:0;transform:scale(2.6) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(-8deg)}}@keyframes celShake{25%{transform:translateX(-5px) rotate(-1deg)}50%{transform:translateX(5px) rotate(1deg)}75%{transform:translateX(-3px)}}
+.cel-dust{position:absolute;width:8px;height:8px;border-radius:50%;background:#e9d6a8;z-index:26}
+.cel-flash{position:absolute;inset:0;background:radial-gradient(#fff6c0,#ffd97700 70%);opacity:0;animation:celFlash .6s 1s ease-out}@keyframes celFlash{30%{opacity:.9}100%{opacity:0}}
+.cel-crest{width:130px;animation:celPop .5s cubic-bezier(.2,1.6,.4,1) both}.cel-crest>img{width:130px;display:block}
+.cel-crown{position:absolute;left:34px;top:-30px;width:62px!important;animation:celCrown .5s .55s cubic-bezier(.3,1.4,.6,1) both}@keyframes celCrown{from{opacity:0;transform:translateY(-70px)}to{opacity:1;transform:none}}
+.cel-title{margin:14px 20px 0;font:400 26px Bree,Georgia,serif;color:#fff;text-shadow:0 3px 0 #6b3d12,0 0 12px #000a;animation:celUp .4s .8s both}
+@media(prefers-reduced-motion:reduce){#celebration *,#celebration *::before{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important}}
+
+/* ---------- Welcome back: coin bag card ---------- */
+#awayDialog{max-width:300px;padding:14px 18px 18px;overflow:visible}
+#awayDialog .away-bag{display:block;width:96px;margin:-58px auto 0;filter:drop-shadow(0 6px 6px #0009)}
+#awayDialog #awayText{margin:2px 0;color:var(--muted);font-weight:700}#awayDialog #awayText .ico{width:14px;height:14px}
+#awayDialog .away-gold{font:900 32px Nunito,sans-serif;color:#ffe08a;text-shadow:0 2px 0 #0008}#awayDialog .away-gold .ico{width:28px;height:28px;vertical-align:-4px}
+#awayDialog small{color:var(--muted)}#awayDialog button{font-size:15px;min-height:46px}
+
+/* ---------- Title screen: logo with turning sun rays ---------- */
+#welcome .welcome-crest{position:relative;display:flex;align-items:center;justify-content:center;width:260px;height:190px;margin-bottom:6px}
+#welcome .welcome-rays{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%;background:repeating-conic-gradient(#ffe7a02e 0 9deg,#0000 9deg 20deg);-webkit-mask:radial-gradient(#000 22%,#0000 66%);mask:radial-gradient(#000 22%,#0000 66%);animation:spin 18s linear infinite}
+#welcome .welcome-logo{position:relative;width:260px;filter:drop-shadow(0 8px 12px #000b)}
+#welcome h1{margin:0 0 8px;font-size:22px}#welcome h1[hidden]{display:none}
+#welcome #startPlaying{width:230px;min-height:50px;font-size:16px;margin-top:6px}
+#welcome #welcomeNew,#welcome #welcomeLanguage{color:#f6e8bf}
+@media(prefers-reduced-motion:reduce){#welcome .welcome-rays{animation:none}}
+@media(max-height:670px){#welcome .welcome-crest{height:150px}#welcome .welcome-logo{width:210px}.phone #sheet:not(:has(.region-confirm)),#options{bottom:96px}}
+svg text.world-tag{fill:#fff6dc;fill-opacity:1;stroke:#2a1d10;stroke-opacity:.85;stroke-width:6px;paint-order:stroke}
+
+/* ---------- Build 42: medals button + list, daily calendar, merchant, boost, inn ---------- */
+#options #musicToggle,#options #vibrationToggle,#options #animToggle,#options #awakeToggle,#options #feedbackBtn,#options #cloudBtn,#cloudDialog #cloudKeep{border:0;border-radius:12px;color:var(--cream);background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6366;text-shadow:none}
+#medalsBtn{position:absolute;left:12px;top:176px;z-index:6;width:58px;height:58px;padding:0;border:0;background:none;cursor:pointer}
+#medalsBtn[hidden]{display:none}#medalsBtn,#adHud{transition:translate .2s ease}@media(prefers-reduced-motion:reduce){#medalsBtn,#adHud{transition:none}}
+#medalsBtn::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(#3c2a16,#1d140a);box-shadow:0 0 0 2px #e2bd63,0 4px 10px #0009}
+#medalsBtn>img{position:absolute;inset:13px;width:32px;height:32px;object-fit:contain}
+#medalsBtn .badge{position:absolute;top:0;right:0;min-width:19px;height:19px;padding:0 4px;border-radius:10px;background:#d8402c;color:#fff;font:900 11px/19px Nunito,sans-serif;box-shadow:0 0 0 2px #fff3c0;animation:bump 1.2s ease-in-out 3}#medalsBtn .badge[hidden]{display:none}
+.guided #medalsBtn{opacity:.3}
+#sheet .medal-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid #e2bd6326}#sheet .medal-row.ready .big-medal{filter:drop-shadow(0 0 8px #f2cd6b)}
+#sheet .big-medal{position:relative;flex:0 0 auto;width:50px;height:62px}#sheet .big-medal>img{width:50px;height:62px;object-fit:contain}#sheet .big-medal .emb{position:absolute;left:14px;top:31px;width:22px;height:22px;object-fit:contain;filter:drop-shadow(0 1px 0 #0006)}
+#sheet .big-medal.none>img:first-child{filter:grayscale(1) brightness(.45);opacity:.8}#sheet .big-medal.none .emb{opacity:.6}
+/* Nine-tier medals: the stars take the colour of the current shield (parchment, green, burgundy). */
+#sheet .stars[data-group="1"] i.on{background:#6fcf8a}#sheet .stars[data-group="2"] i.on{background:#d9607a}
+#sheet .medal-row .tx{flex:1;min-width:0}#sheet .medal-row .tx b{display:block;font-size:13px}#sheet .medal-row .tx small{font:800 11px Nunito,sans-serif;color:var(--muted)}
+#sheet .meter-bar{display:block;position:relative;height:9px;margin:3px 0 1px;border-radius:6px;background:#0009;box-shadow:0 0 0 1.5px #e2bd63aa;overflow:hidden}#sheet .meter-bar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#c99a3a,#f2d27a)}
+#sheet .stars{display:flex;gap:2px;margin-top:2px}#sheet .stars i{width:12px;height:12px;background:#0007;clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%)}#sheet .stars i.on{background:#ffd34d}
+#sheet .medal-row .action{flex:0 0 auto;min-height:36px;padding:0 10px}
+.medal-fly{position:absolute;left:50%;top:42%;z-index:24;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.medal-fly img{width:96px;height:118px;object-fit:contain;filter:drop-shadow(0 6px 8px #0009)}.medal-fly b{margin-top:4px;font:400 22px Bree,Georgia,serif;color:#fff;text-shadow:0 3px 0 #6b3d12,0 0 12px #000a;white-space:nowrap}
+.mf-shine{position:absolute;top:-40px;width:200px;height:200px;border-radius:50%;background:radial-gradient(#ffe7a0aa,#0000 65%);animation:mfShine 1s ease-out both}@keyframes mfShine{0%{opacity:0;transform:scale(.5)}40%{opacity:1}100%{opacity:0;transform:scale(1.3)}}
+#dailyDialog{max-width:330px;text-align:center;padding:16px}#dailyDialog h3{margin:0 0 10px;font-size:22px}
+#dailyGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px}
+.dtile{position:relative;display:flex;flex-direction:column;align-items:center;padding:6px 2px 5px;border-radius:10px;background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6344}.dtile.big{grid-column:span 2}
+.dtile small{font:800 10px Nunito,sans-serif;color:var(--muted)}.dtile>img:not(.tick){width:34px;height:34px;object-fit:contain;margin:2px 0}.dtile.big>img:not(.tick){width:44px;height:44px;margin:-3px 0}.dtile b{font:900 12px Nunito,sans-serif;color:#ffe08a}
+.dtile.done{opacity:.55}.dtile .tick{position:absolute;right:3px;bottom:22px;width:20px;height:20px;filter:drop-shadow(0 1px 1px #0008)}
+.dtile.today{background:linear-gradient(#5a4316,#3c2a10);box-shadow:0 0 0 2px #f2cd6b,0 0 14px #f2cd6b88;animation:bump 1.4s ease-in-out 3}
+#dailyDialog #dailyCollect{width:100%;min-height:46px;border:0;border-radius:13px;font:800 15px Nunito,sans-serif;color:#4a2f0a;background:linear-gradient(#ffe08a,#e2a93a);box-shadow:0 4px 0 #8a5a14,0 6px 10px #0006,inset 0 2px 0 #fff3c0;text-shadow:0 1px 0 #fff3c0}
+#dailyDialog::backdrop{background:#0b1a12b8}
+/* 1.7.6: bigger daily reward with a chest, turning light rays, a popping tile and a sparkle burst on claim. */
+#dailyDialog{max-width:370px;width:calc(100% - 28px);padding:18px 16px 16px;overflow:visible;animation:dailyIn .45s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes dailyIn{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+#dailyDialog h3{font-size:26px;margin:0 0 2px;position:relative}
+#dailyStreak{margin:0 0 12px;font:800 13px Nunito,sans-serif;color:#ffe08a;position:relative}
+#dailyDialog.big-day #dailyStreak{font-size:15px;text-shadow:0 0 10px #f2cd6b}
+.daily-rays{position:absolute;left:50%;top:-10px;width:300px;height:300px;margin-left:-150px;pointer-events:none;border-radius:50%;background:repeating-conic-gradient(#ffe7a033 0 10deg,#0000 10deg 22deg);-webkit-mask:radial-gradient(#000 25%,#0000 68%);mask:radial-gradient(#000 25%,#0000 68%);animation:dailySpin 14s linear infinite}
+@keyframes dailySpin{to{transform:rotate(360deg)}}
+.daily-chest{position:relative;height:74px;margin-top:-52px}.daily-chest img{width:96px;height:96px;object-fit:contain;filter:drop-shadow(0 6px 8px #0009);animation:dailyBob 1.8s ease-in-out infinite}
+@keyframes dailyBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-6px) rotate(3deg)}}
+#dailyGrid{gap:8px;position:relative}.dtile{padding:8px 2px 6px}.dtile>img:not(.tick){width:40px;height:40px}.dtile.big>img:not(.tick){width:54px;height:54px}.dtile b{font-size:13px}
+#dailyDialog.claiming .daily-chest img{animation:dailyOpen .55s ease-out both}
+@keyframes dailyOpen{0%{transform:scale(1)}35%{transform:scale(1.35) rotate(-8deg)}60%{transform:scale(1.15) rotate(6deg)}100%{transform:scale(1.25)}}
+#dailyDialog.claiming .dtile.today{animation:dailyTile .6s ease-out both}
+@keyframes dailyTile{0%{transform:scale(1)}30%{transform:scale(1.3) rotate(-4deg);box-shadow:0 0 0 3px #fff3c0,0 0 30px #f2cd6b}100%{transform:scale(1.12);box-shadow:0 0 0 2px #f2cd6b,0 0 22px #f2cd6b}}
+#dailyDialog.claiming .daily-rays{animation:dailySpin 3s linear infinite;background:repeating-conic-gradient(#ffe7a066 0 10deg,#0000 10deg 22deg)}
+.dspark{position:absolute;left:50%;top:40px;width:12px;height:12px;margin:-6px;pointer-events:none;background:radial-gradient(#fffbe6,#ffd75e 45%,#0000 70%);border-radius:50%;animation:dspark .9s ease-out both}
+.dspark:nth-child(3n){width:18px;height:18px;background:conic-gradient(from 45deg,#0000 0 20%,#fff6c8 20% 30%,#0000 30% 45%,#fff6c8 45% 55%,#0000 55% 70%,#fff6c8 70% 80%,#0000 80%)}
+@keyframes dspark{0%{transform:translate(0,0) scale(.3);opacity:1}70%{opacity:1}100%{transform:translate(var(--x),var(--y)) scale(1);opacity:0}}
+@media (prefers-reduced-motion:reduce){.daily-rays,.daily-chest img{animation:none}}
+/* 1.7.6: the settings X stays at the top right while the list scrolls. */
+#options #optionsX{position:sticky;top:0;float:right;margin:-4px -4px -40px 0}
+/* 1.7.6: critter album (medals screen) and the visitor that hops in after the daily reward. */
+#sheet .album-hint{display:block;margin:-4px 0 8px;color:var(--muted);font:700 12px Nunito,sans-serif}
+#sheet .album-row{margin:0 0 10px}#sheet .album-row>b{display:block;margin:0 0 4px;font:400 15px Bree,Georgia,serif;color:var(--goldtext)}
+#sheet .album-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+#sheet .album-cell{display:flex;flex-direction:column;align-items:center;padding:4px 2px;border-radius:10px;background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6344}
+#sheet .album-cell img{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 2px 2px #0007)}
+#sheet .album-cell small{font:800 9.5px/1.15 Nunito,sans-serif;color:var(--cream);text-align:center;min-height:2.3em}
+#sheet .album-cell.unknown img{filter:brightness(0) opacity(.45)}#sheet .album-cell.unknown small{color:var(--muted)}
+.critter-fly{position:absolute;left:50%;top:40%;z-index:25;display:flex;flex-direction:column;align-items:center;transform:translate(-50%,-50%);animation:critterIn 3.2s ease-out both}
+.critter-fly img{position:relative;width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 6px 8px #0009);animation:critterHop .5s .2s ease-out 3}
+.critter-fly b{position:relative;margin-top:6px;padding:6px 14px;border-radius:14px;background:#1d3a2ee6;box-shadow:0 0 0 2px #e2bd63;font:400 19px Bree,Georgia,serif;color:#fff3c0;white-space:nowrap}
+@keyframes critterIn{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}12%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}20%{transform:translate(-50%,-50%) scale(1)}85%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%)}}
+@keyframes critterHop{0%,100%{transform:translateY(0)}40%{transform:translateY(-18px) scaleY(1.04)}70%{transform:translateY(0) scaleY(.94)}}
+/* 1.7.6: region statue; the radiant one breathes a soft glow. */
+/* Still glow (was an endless blended pulse inside the map SVG, which kept iPhones redrawing the whole map). */
+.region-statue .statue-glow{fill:#fff2b8;opacity:.2}
+@keyframes statueGlow{0%,100%{opacity:.08}50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.critter-fly,.critter-fly img,.region-statue .statue-glow{animation:none}}
+/* 1.7.6: welcome-back spotlight. */
+#awaySpot{margin:10px 0 4px;padding:8px 10px;border-radius:12px;background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6344;text-align:left;animation:spotIn .5s ease-out}
+@keyframes spotIn{0%{transform:translateY(8px) scale(.96)}100%{transform:none}}
+#awaySpot .spot-line{display:flex;align-items:center;gap:8px;margin:0;font:700 13px/1.3 Nunito,sans-serif;color:var(--cream)}#awaySpot img{width:26px;height:26px;flex:0 0 auto;object-fit:contain}
+#awaySpot b{color:#ffe08a}
+#awayDialog #awaySpot .spot-go{display:flex;align-items:center;gap:8px;width:100%;min-height:40px;margin-top:8px;padding:4px 10px;border-radius:10px;font:800 13px Nunito,sans-serif;color:var(--cream);background:#2b5a44;box-shadow:inset 0 0 0 1px #e2bd6388;text-shadow:none;text-align:left}
+#merchant{position:absolute;z-index:4;width:76px;height:76px;padding:0;border:0;background:none;cursor:pointer;animation:merchantIn .6s ease-out both,merchantBob 1.6s .6s ease-in-out infinite;filter:drop-shadow(0 6px 5px #0007)}
+#merchant>img{width:76px;height:76px;object-fit:contain}#merchant .m-bubble{position:absolute;top:-14px;right:-6px;width:32px;height:32px;border-radius:50%;background:#fff6dc;box-shadow:0 0 0 2px #e2bd63,0 0 12px #f2cd6b;display:flex;align-items:center;justify-content:center;animation:bump 1s ease-in-out 3}#merchant .m-bubble img{width:22px;height:22px}
+#merchant.leave{animation:merchantOut .45s ease-in forwards}
+@keyframes merchantIn{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}@keyframes merchantBob{50%{transform:translateY(-5px)}}@keyframes merchantOut{to{opacity:0;transform:translateX(40px) scale(.8)}}
+#sheet .action.boost{flex:0 0 auto;margin-left:auto;min-height:32px;padding:0 9px;border-radius:16px;font-size:12px;white-space:nowrap}#sheet .action.boost .ico{width:16px;height:16px;margin:0 2px 0 0}
+#sheet .action.boost.active:disabled{color:#4a2f0a;background:linear-gradient(#ffe08a,#e2a93a);box-shadow:0 0 0 2px #fff3c0,0 0 14px #f2cd6b;text-shadow:none;animation:bump 1.2s ease-in-out 3}
+#sheet .shop-item>img.inn-img{width:40px;height:40px;transform:none}#sheet .inn-row .tip{font-size:12px}
+@media(prefers-reduced-motion:reduce){#merchant,.dtile.today,#medalsBtn .badge{animation:none}}#options #cloudBtn[hidden]{display:none}#cloudDialog{max-width:320px;text-align:center}#cloudDialog .cloud-line{margin:4px 0;font-weight:800;color:var(--cream)}#cloudDialog button{width:100%;min-height:44px;margin-top:10px}
+
+/* ---------- Full screen safe areas ----------
+   The map fills the whole screen, under the camera hole / notch too. Only the floating controls step down by the
+   cutout height (Android sets --kv-top / --kv-bottom from native code; iOS uses env() through the same variables). */
+:root{--kv-top:env(safe-area-inset-top,0px);--kv-bottom:env(safe-area-inset-bottom,0px)}
+header,#playerBadge,#goalStrip,#guideStrip,#medalsBtn,#sealsBtn,#bookBtn,#rushBar,#adHud,#cameraControls,#notice,#saleFeedback{margin-top:var(--kv-top)}
+#nav,.phone #sheet:not(:has(.region-confirm)),#options{margin-bottom:var(--kv-bottom)}
+/* Touch feel like a game, not a web page: no blue tap flash, no long-press text selection or copy/translate menu,
+   no image drag, and no focus ring after a tap (keyboard focus still shows one). */
+html,body,*{-webkit-tap-highlight-color:transparent}
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{touch-action:manipulation}
+img,svg image{-webkit-user-drag:none}
+:focus:not(:focus-visible){outline:none}
+
+/* ---------- Build 45: rewarded ads (Android app only) ---------- */
+#adHud{position:absolute;left:12px;top:240px;z-index:6;display:flex;flex-direction:column;gap:6px}#adHud[hidden]{display:none}
+#adHud button{position:relative;width:58px;height:58px;padding:0;border:0;background:none;cursor:pointer}#adHud button[hidden]{display:none}
+#adHud button::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(#3c2a16,#1d140a);box-shadow:0 0 0 2px #e2bd63,0 4px 10px #0009}
+#adHud button>img{position:absolute;inset:13px;width:32px;height:32px;object-fit:contain}
+#adHud small{position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);padding:0 5px;border-radius:8px;background:#243d2d;color:#f4d686;font:900 10px/15px Nunito,sans-serif;white-space:nowrap;box-shadow:0 0 0 1px #e2bd63}
+#adBoostBtn.active::before{box-shadow:0 0 0 2px #f2cd6b,0 0 12px #f2cd6b,0 4px 10px #0009}
+#chestBtn .badge{position:absolute;top:0;right:0;min-width:19px;height:19px;border-radius:10px;background:#d8402c;color:#fff;font:900 11px/19px Nunito,sans-serif;animation:bump 1.2s ease-in-out 3}
+.guided #adHud{display:none}
+.ad-btn{display:inline-flex;align-items:center;justify-content:center;gap:4px}.ad-btn[hidden]{display:none}.ad-btn .ico{width:18px;height:18px}
+#awayDouble,#dailyDouble{margin-top:8px}
+#storyLine{position:absolute;left:50%;top:232px;z-index:23;display:flex;gap:10px;align-items:center;width:min(320px,90%);padding:9px 20px 9px 14px;box-sizing:border-box;transform:translateX(-50%);color:#4a3420;background:url('../assets/parchment-panel-v1.webp') center/cover;border-radius:8px;box-shadow:0 6px 14px #0008;font:800 13px/1.3 Nunito,sans-serif}#storyLine[hidden]{display:none}#storyLine img{flex:0 0 auto;width:46px;height:46px;border-radius:50%;object-fit:cover}#storyLine b{display:block;font:400 14px Bree,Georgia,serif}.ledger{margin:10px 0}.ledger summary{color:var(--goldtext);font:400 16px Bree,Georgia,serif}.ledger-list{max-height:38vh;overflow:auto;text-align:left}.ledger-list p{margin:7px 0;font-size:13px;line-height:1.3}.ledger-list b{display:block;color:var(--goldtext);font-size:12px}#talkDialog{max-width:300px;text-align:center}#talkDialog img{width:72px;height:72px;object-fit:contain;border-radius:50%}#talkDialog p{margin:6px 0 12px;line-height:1.35}#talkDialog button{display:flex;width:100%;margin-top:8px;justify-content:center}#talkDialog button[hidden]{display:none}#talkDialog #talkSkip{border:0;border-radius:12px;color:var(--cream);background:#0000004d;box-shadow:none;text-shadow:none}#sheet .hint{display:block;margin:5px 2px 0;color:var(--cream);font-size:12px;font-weight:700;line-height:1.25;opacity:.88}#sheet .help{flex:0 0 auto;width:26px;height:26px;min-height:0;padding:0;margin-left:6px;border:0;border-radius:50%;color:#4a2f0a;background:linear-gradient(#ffe08a,#e2a93a);font:900 15px/26px Nunito,sans-serif;text-shadow:none}#questReceipt{position:absolute;left:50%;top:auto;bottom:calc(var(--kv-bottom,0px) + 108px);z-index:24;pointer-events:none;animation:receiptLife 3s ease both;width:min(290px,88%);padding:10px 22px;box-sizing:border-box;transform:translateX(-50%);color:#4a3420;background:url('../assets/parchment-panel-v1.webp') center/cover;border-radius:8px;box-shadow:0 8px 18px #0009;font:800 13px Nunito,sans-serif}#questReceipt[hidden]{display:none}@keyframes receiptLife{0%{opacity:0;margin-bottom:-8px}8%,85%{opacity:1;margin-bottom:0}100%{opacity:0}}@media(prefers-reduced-motion:reduce){#questReceipt{animation:none}}
+/* Small clarity labels (panels.js): Automatic after hiring, caravan caption, storehouse full, building name. */
+#sheet .worker.auto{align-items:center}#sheet .auto-tag{margin-left:8px;padding:2px 8px;border-radius:9px;background:#2f5a3a;color:#cdeec0;font:800 11px/1.4 Nunito,sans-serif;box-shadow:0 0 0 1px #6fa86a66}
+#sheet .trip-cap{display:block;min-height:15px;margin:2px 0 0;font:700 11px/1.35 Nunito,sans-serif;color:#e9dcb8;opacity:.85}
+#sheet .full-note{display:block;margin:2px 0 4px;font:800 11px/1.3 Nunito,sans-serif;color:#ffb35c}#sheet .full-note:not(.on){visibility:hidden}#sheet .job-town{display:block;font:700 10px/1.2 Nunito,sans-serif;opacity:.7}#sheet details>summary::after{content:'';flex-shrink:0;width:6px;height:6px;margin:0 4px 0 2px;border-right:2px solid var(--goldtext);border-bottom:2px solid var(--goldtext);transform:rotate(-45deg);opacity:.7}#sheet details[open]>summary::after{transform:rotate(45deg)}#sheet summary .bname{min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:700 12px/1.2 Nunito,sans-serif;color:var(--cream)}
+.help,.to-mile{position:relative}.help::after,.to-mile::after{content:'';position:absolute;inset:-9px -6px}
+/* Map juice (experience.js juiceBuilding / juiceCaravan): squash, stretch, white flash, landing dust. */
+.jx-up,.jx-big,.jx-flash,.jx-land{transform-box:view-box}
+.jx-up{animation:jxUp .42s cubic-bezier(.3,1.5,.5,1)}
+.jx-big{animation:jxBig .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes jxUp{0%{transform:scale(1,1)}22%{transform:scale(1.14,.82)}50%{transform:scale(.92,1.12)}75%{transform:scale(1.04,.97)}100%{transform:scale(1,1)}}
+@keyframes jxBig{0%{transform:scale(1,1)}18%{transform:scale(1.22,.72)}45%{transform:scale(.88,1.22)}70%{transform:scale(1.06,.95)}100%{transform:scale(1,1)}}
+.jx-flash{pointer-events:none;filter:brightness(0) invert(1);opacity:0}
+.jx-flash.jx-up{animation:jxUp .42s cubic-bezier(.3,1.5,.5,1),jxFlash .32s ease-out}
+.jx-flash.jx-big{animation:jxBig .6s cubic-bezier(.3,1.6,.5,1),jxFlash .55s ease-out}
+@keyframes jxFlash{0%{opacity:.85}100%{opacity:0}}
+.jx-land{animation:jxLand .38s cubic-bezier(.3,1.5,.5,1)}
+@keyframes jxLand{0%{transform:scale(1,1)}30%{transform:scale(1.18,.8)}65%{transform:scale(.95,1.06)}100%{transform:scale(1,1)}}
+.jx-dust{pointer-events:none;fill:#e8d3a0;transform-box:fill-box;transform-origin:50% 50%;animation:jxDust .5s ease-out forwards}
+@keyframes jxDust{0%{opacity:.7;transform:scale(.4)}100%{opacity:0;transform:scale(1.6)}}
+.no-ambient .jx-up,.no-ambient .jx-big,.no-ambient .jx-land,.no-ambient .jx-dust{animation:none}.no-ambient .jx-flash{display:none}
+@media(prefers-reduced-motion:reduce){.jx-up,.jx-big,.jx-land,.jx-dust{animation:none}.jx-flash{display:none}}#questReceipt h4{margin:0 0 6px;font:400 18px Bree,Georgia,serif;text-align:center}#questReceipt p{display:flex;justify-content:space-between;gap:10px;margin:3px 0}#questReceipt p span:first-child{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}#questReceipt .total{margin-top:6px;padding-top:6px;border-top:1px solid #4a342066;font-size:15px}#saleFeedback .ico{margin-right:1px}#adDialog{max-width:300px;text-align:center}#adDialog #adIcon{width:64px;height:64px;object-fit:contain}#adDialog p{margin:6px 0 12px}#adDialog button{display:flex;width:100%;margin-top:8px}
+#adDialog #adClose{border:0;border-radius:12px;color:var(--cream);background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6366;text-shadow:none;justify-content:center}
+#options #privacyBtn,#options #policyBtn{border:0;border-radius:12px;color:var(--cream);background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6366;text-shadow:none}#options #privacyBtn[hidden]{display:none}
+/* Touch targets: at least 44 px for a finger (Android/iOS guidance). */
+#centerMap{width:44px!important;height:44px!important;font-size:20px}#sheet .close{min-width:44px;min-height:44px}#sheet button[data-buy]{min-height:40px}#back,#settings{min-width:44px;min-height:44px}
+/* Building milestone row: current output multiplier, bar to the next x2 level. */
+#sheet .milestone{display:flex;align-items:center;gap:7px;margin:2px 0 8px;font:800 12px/1 Nunito,sans-serif;color:#f4d686}#sheet .milestone b{min-width:26px;padding:2px 5px;border-radius:8px;background:#0005;box-shadow:0 0 0 1px #e2bd6388;text-align:center}#sheet .milestone .bar{flex:1;height:6px;border-radius:4px;background:#0006;overflow:hidden}#sheet .milestone .bar i{display:block;height:100%;background:linear-gradient(90deg,#c98f2a,#f4d686)}#sheet .milestone small{font-size:11px;color:#e9dcb2;white-space:nowrap}#sheet .milestone.done{gap:4px}
+/* Buy to milestone: small gold button at the end of the row. */
+#sheet .to-mile{display:inline-flex;align-items:center;gap:2px;min-height:32px;padding:3px 8px;border:0;border-radius:10px;font:800 11px/1 Nunito,sans-serif;white-space:nowrap;color:#4a2f0a;background:linear-gradient(#ffe08a,#e2a93a);box-shadow:0 2px 0 #8a5a14}#sheet .to-mile:disabled{filter:grayscale(.8) brightness(.75)}#sheet .to-mile .ico{width:13px;height:13px}
+/* Best value upgrade: a star and a green glow on the upgrade that adds the most sales per gold. */
+#sheet .action.upgrade.best{position:relative;box-shadow:0 4px 0 #8a5a14,0 0 0 2px #7fe08a,0 0 12px #7fe08a99}#sheet .action.upgrade.best::after{content:"★";position:absolute;top:-8px;right:-6px;width:18px;height:18px;border-radius:50%;font-size:12px;line-height:18px;color:#1f4a20;background:#a8f0a0;box-shadow:0 1px 3px #0008}
+#sheet summary.best{box-shadow:0 0 0 2px #7fe08a,0 0 10px #7fe08a88}#sheet .best-note{display:block;margin:-2px 0 6px;font:800 11px/1.3 Nunito,sans-serif;color:#a8f0a0}#sheet .best-note[hidden]{display:none}
+/* Veteran trim (lifetime trips) on map caravans, workshop dress (best milestone) on map buildings: bronze, silver, gold, royal. */
+.vet,.dress{pointer-events:none}.vet[data-r="0"],.dress[data-t="0"]{display:none}.vet line,.dress line{stroke:#5b3a1a;stroke-width:.7}
+.vet path,.dress path{stroke:#3a240e;stroke-width:.3}.vet[data-r="1"] path,.dress[data-t="1"] path{fill:#c9773a}.vet[data-r="2"] path,.dress[data-t="2"] path{fill:#d9dee6}.vet[data-r="3"] path,.dress[data-t="3"] path{fill:#f1c232}.dress[data-t="4"] path{fill:#8e44c4}
+.dress .flag2{display:none}.dress[data-t="3"] .flag2,.dress[data-t="4"] .flag2{display:inline}
+.dress[data-hide]{display:none}
+#sheet .vet-chip[data-r="1"]{color:#e8a06a}#sheet .vet-chip[data-r="2"]{color:#e6eaf0}#sheet .vet-chip[data-r="3"]{color:#ffd54a}
+
+/* Alive map layer (ambient.js): transform/opacity animations only. Off with .no-ambient (Options) or reduced motion. */
+.ambient .amb-cloud{animation:amb-slide linear infinite}
+.ambient .amb-mist{opacity:.9}
+@keyframes amb-slide{from{transform:translateX(0)}to{transform:translateX(var(--dx))}}
+@keyframes amb-smoke{0%{opacity:0;transform:translate(0,0) scale(.6)}20%{opacity:.55}100%{opacity:0;transform:translate(4px,-22px) scale(2.2)}}
+.ambient .amb-snow{fill:#fff;opacity:.85;animation:amb-fall linear infinite}
+@keyframes amb-fall{from{transform:translate(0,0)}to{transform:translate(12px,var(--dy))}}
+.ambient .amb-drift{animation:amb-drift ease-in-out infinite alternate}
+@keyframes amb-drift{from{transform:translate(0,0) rotate(0)}to{transform:translate(var(--dx),var(--dy)) rotate(40deg)}}
+.ambient .amb-dust{opacity:0;animation:amb-dust ease-in-out infinite}
+@keyframes amb-dust{0%{opacity:0;transform:translateX(0)}30%{opacity:1}100%{opacity:0;transform:translateX(var(--dx))}}
+.ambient .amb-firefly{fill:#e9f59a;opacity:0;animation:amb-blink ease-in-out infinite}
+@keyframes amb-blink{0%,100%{opacity:0}50%{opacity:.9}}
+.ambient .amb-rain{stroke:#cfe3f2;stroke-width:.6;opacity:.55;animation:amb-rain linear infinite}
+@keyframes amb-rain{from{transform:translate(0,0)}to{transform:translate(-10px,var(--dy))}}
+.ambient .amb-wind{fill:none;stroke:#f4f1e4;stroke-width:.8;stroke-linecap:round;opacity:.7}
+.ambient .amb-gull{fill:none;stroke:#2c3440;stroke-width:.9;stroke-linecap:round;stroke-linejoin:round;opacity:.75}
+.ambient .amb-haze{fill:#e7c48a;opacity:.16}
+.no-ambient .ambient{display:none}
+@media (prefers-reduced-motion:reduce){.ambient{display:none}}.ambient .amb-water{opacity:0;animation:amb-shimmer 6s ease-in-out infinite}
+@keyframes amb-shimmer{0%,100%{opacity:0}50%{opacity:.6}}
+/* Trade Seals: rail button under the map controls, tree rows, pick-one choices. */
+#sealsBtn{position:absolute;right:12px;top:240px;z-index:6;width:58px;height:58px;padding:0;border:0;background:none;cursor:pointer}#sealsBtn[hidden]{display:none}
+#sealsBtn::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(#3c2a16,#1d140a);box-shadow:0 0 0 2px #e2bd63,0 4px 10px #0009}
+#sealsBtn>img{position:absolute;inset:13px;width:32px;height:32px;object-fit:contain}
+#sealsBtn .badge{position:absolute;top:0;right:0;min-width:19px;height:19px;padding:0 4px;border-radius:10px;background:#d8402c;color:#fff;font:900 11px/19px Nunito,sans-serif;box-shadow:0 0 0 2px #fff3c0}#sealsBtn .badge[hidden]{display:none}
+.guided #sealsBtn,.guided #bookBtn{display:none}
+#bookBtn{position:absolute;right:12px;top:176px;z-index:6;width:58px;height:58px;padding:0;border:0;background:none;cursor:pointer}#bookBtn[hidden]{display:none}
+#bookBtn::before{content:'';position:absolute;inset:6px;border-radius:50%;background:radial-gradient(#3c2a16,#1d140a);box-shadow:0 0 0 2px #e2bd63,0 4px 10px #0009}
+#bookBtn>img{position:absolute;inset:13px;width:32px;height:32px;object-fit:contain}
+#bookBtn .badge{position:absolute;top:0;right:0;min-width:19px;height:19px;padding:0 4px;border-radius:10px;background:#d8402c;color:#fff;font:900 11px/19px Nunito,sans-serif;box-shadow:0 0 0 2px #fff3c0}#bookBtn .badge[hidden]{display:none}
+#rushBar{position:absolute;left:76px;right:76px;top:176px;z-index:7;padding:7px 9px;border-radius:12px;color:var(--cream);background:#1d140af4;box-shadow:0 0 0 2px #e2bd63,0 6px 14px #0009;font:800 12px Nunito,sans-serif}#rushBar[hidden]{display:none}
+#rushBar .rush-top{display:flex;align-items:center;gap:6px}#rushBar .rush-top b{flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:#f4d686}#rushBar .rush-time{min-width:34px;text-align:right;font-weight:900}#rushBar.late .rush-time{color:#ff8a70}
+#rushBar .rush-list{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}#rushBar .rush-pick{display:flex;flex-direction:column;align-items:center;gap:1px;min-height:64px;padding:4px;border:0;border-radius:10px;color:#fff;background:linear-gradient(#5fbf86,#2b7a52);box-shadow:0 3px 0 #164a30;font:800 11px/1.1 Nunito,sans-serif;cursor:pointer}#rushBar .rush-pick img{width:28px;height:28px;object-fit:contain}#rushBar .rush-pick:active{transform:translateY(2px);box-shadow:0 1px 0 #164a30}
+#rushBar .rush-now{display:flex;align-items:center;gap:6px;margin-top:5px}#rushBar .rush-now img{width:26px;height:26px;object-fit:contain}#rushBar .meter-bar{flex:1;display:block;height:9px;border-radius:5px;overflow:hidden;background:#0009;box-shadow:0 0 0 1.5px #e2bd63aa}#rushBar .meter-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c99a3a,#f2d27a);transition:width .25s}#rushBar .rush-count{min-width:52px;text-align:right}
+#sheet .book-next{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:center;margin:2px 0 6px}#sheet .book-next .meter-bar{grid-column:1}#sheet .book-next small{font:800 11px Nunito,sans-serif;color:var(--muted)}#sheet .book-next small:first-child{grid-column:1/-1}
+#sheet .book-row .job-ico{flex:0 0 auto;width:42px;height:42px;display:grid;place-items:center;border-radius:50%;background:radial-gradient(#3c2a16,#1d140a);box-shadow:0 0 0 2px #e2bd63}#sheet .book-row .job-ico img{width:30px;height:30px;object-fit:contain}
+#sheet .book-row .tx small .ico{width:14px;height:14px}#sheet .book-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 0 6px}#sheet .book-foot small{color:var(--muted);font:800 11px Nunito,sans-serif}#sheet .book-foot .action{min-height:32px;padding:0 10px;background:linear-gradient(#7c6a55,#54463a);box-shadow:0 3px 0 #2b231b}
+#prestigeDialog .rule-list{display:grid;gap:6px;margin:8px 0}#prestigeDialog .rule-list[hidden]{display:none}#prestigeDialog .rule-list>small{color:var(--muted);font:800 11px Nunito,sans-serif;text-align:center}#prestigeDialog .rule-pick{display:flex;flex-direction:column;align-items:center;gap:1px;min-height:48px;padding:6px 8px;border:0;border-radius:11px;color:var(--cream);background:#0004;box-shadow:0 0 0 1.5px #e2bd6366;font:800 13px Nunito,sans-serif;cursor:pointer}#prestigeDialog .rule-pick small{color:var(--muted);font:800 11px Nunito,sans-serif}#prestigeDialog .rule-pick small .ico{width:13px;height:13px;vertical-align:-2px}#prestigeDialog .rule-pick[aria-pressed=true]{background:#e2bd6333;box-shadow:0 0 0 2px #f4d686}#sheet .book-sub{margin-top:8px}#sheet .book-sub h4{margin:0}#sheet .book-rush{margin-top:8px}#sheet .book-rush small{display:block;margin:2px 0;color:var(--muted);font:800 11px Nunito,sans-serif}
+#sheet .seal-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #ffffff14}
+#sheet .seal-row .tx{flex:1;min-width:0}#sheet .seal-row .tx b{display:block;color:var(--cream)}#sheet .seal-row .tx small{opacity:.8}
+#sheet .seal-row .action{min-height:44px;flex:none}
+#sheet .seal-pick{padding:8px 0 4px}#sheet .seal-pick h5{display:flex;align-items:center;gap:6px;margin:0 0 6px;color:#f4d686;font-size:13px}
+#sheet .seal-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#sheet .seal-choice{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:76px;padding:8px 6px;text-align:center;white-space:normal}
+#sheet .seal-choice small{font-weight:700;opacity:.85}#sheet .seal-choice.chosen{box-shadow:0 0 0 2px #f4d686}
+#sheet .prestige.empire h4 span{font-size:20px}
+#empireDialog{max-width:330px;text-align:center}#empireDialog .gain{font-size:18px;font-weight:900;color:#f4d686}#empireDialog .gain .ico{width:24px;height:24px;vertical-align:-6px;margin-right:4px}#empireDialog h4{margin:10px 0 2px;color:var(--cream)}#empireDialog p{margin:0 0 6px}#empireDialog button{width:100%;min-height:44px;margin-top:8px}
+/* Town growth dots under the tag: gold = built, pulsing = under construction, hollow = not yet (app.js syncStages). */
+.tag-pips circle{stroke:#7a5a22;stroke-width:1;vector-effect:non-scaling-stroke;fill:#f6e9c6;fill-opacity:.55}
+.tag-pips circle[data-s="built"]{fill:#f2b632;fill-opacity:1}
+/* Pulses 3 times when building starts, then stays still: an endless animation inside the map SVG kept iPhones redrawing the map (2026-11-19). */
+.tag-pips circle[data-s="building"]{fill:#f2b632;fill-opacity:.7;animation:pip-build 1.2s ease-in-out 3}
+@media (prefers-reduced-motion:reduce){.tag-pips circle[data-s="building"]{animation:none}}
+@keyframes pip-build{0%,100%{fill-opacity:.25}50%{fill-opacity:1}}
+.no-ambient .tag-pips circle[data-s="building"]{animation:none;fill-opacity:.6}
+/* Town pads on the map: a producer appears when built and shows faded while it is being built. */
+.pad-building[data-s="empty"]{display:none}
+.pad-building:not(.pad-site)[data-s="building"],.pad-site[data-s="built"]{display:none}
+/* Building under construction in the town panel: wooden scaffolding over the greyed picture. */
+#sheet summary.constructing svg{opacity:.85;filter:grayscale(.4)}
+.scaffold line{stroke:#8a5a2b;stroke-width:2.2;stroke-linecap:round}
+/* An open panel sits above the round side buttons (they used to cover the Seals panel's title); the Market Rush bar stays on top. */
+#sheet{z-index:7}#rushBar{z-index:8}
+
+/* Road goal card (quest window and welcome-back) */
+.road-goal{margin:4px 0 10px;padding:8px 10px;border:1px solid #e2bd6366;border-radius:10px;background:#00000033;text-align:left}.road-goal.ready{border-color:#a6dc80;box-shadow:0 0 0 1px #a6dc8066}.road-goal p{margin:2px 0}.road-head{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}.road-title b{color:var(--goldtext)}.road-bar{height:7px;margin:5px 0 3px;border-radius:4px;background:#0006;overflow:hidden}.road-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold2),var(--goldtext))}.road-num{font-size:13px}.road-num .ico,#awaySpot .road-num img{width:14px;height:14px;vertical-align:-2px;margin-left:3px}.road-blocks{font-size:12px;color:#f0a98c}.road-gains{font-size:12px;color:#a6dc80}
+#empireDialog .seal-buy{margin:6px 0 8px;padding:6px 10px;border:1px solid #e2bd6355;border-radius:10px;background:#00000026;text-align:left;font-size:13px}#empireDialog .seal-buy ul{margin:4px 0 0;padding-left:18px}#empireDialog .seal-buy li{margin:2px 0}#empireDialog .seal-buy b{color:var(--goldtext)}#empireDialog .seal-buy .fx{color:#a6dc80;white-space:nowrap}#empireDialog .buy-head{margin:0;color:var(--muted)}
+/* Next region teaser on the world map, first re-founding preview */
+.region-card.locked.next .card-art{filter:brightness(.55) saturate(.8)}.region-card .card-next{position:absolute;left:8px;right:8px;bottom:34%;text-align:center;font:700 12px/1.25 Nunito,sans-serif;color:#f2cd6b;text-shadow:0 1px 3px #000,0 0 6px #000}#prestigeDialog .first-found{margin:6px 0 8px;padding:6px 10px;border:1px solid #a6dc8066;border-radius:10px;background:#00000026;text-align:left;font-size:13px}#prestigeDialog .first-found .ff-head{margin:0;color:#a6dc80;font-weight:700}#prestigeDialog .first-found ul{margin:4px 0 0;padding-left:18px}
+.region-card.locked.next .card-goods img{filter:drop-shadow(0 1px 2px #000)}
+
+/* Build 67: mission book in the early phase (until the first route runs by itself) and the "new mission" badge */
+#missionMedal .mbadge{position:absolute;top:-2px;right:-2px;z-index:3;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#d8342c;color:#fff;font:900 13px/1 Nunito,sans-serif;box-shadow:0 0 0 2px #fff3c0,0 2px 5px #0008;animation:mbadge 1.6s ease-in-out 3}
+@keyframes mbadge{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
+@media (prefers-reduced-motion:reduce){#missionMedal .mbadge{animation:none}}
+#goalStrip.early{max-width:calc(100% - 84px)}
+#goalStrip.early #missionMedal{width:74px;height:74px}
+#goalStrip.early #missionMedal img{inset:18px;width:38px;height:38px}
+#goalStrip.early #missionMedal .mbadge{width:24px;height:24px;font-size:15px}
+#goalStrip.early .mpill{margin-left:-30px;padding:7px 10px 7px 38px;border-radius:0 16px 16px 0;white-space:normal}
+#goalStrip.early.open .mpill{max-width:330px}
+#goalStrip.early #openGoals{font-size:15px;line-height:1.2}
+#goalStrip.early .mtitle{white-space:normal;overflow:visible}
+#goalStrip .mwhy{display:block;margin-top:2px;font:700 12px/1.25 Nunito,sans-serif;color:#e8d6a6;white-space:normal}
+#goalStrip.early #claimGoal{min-height:36px;font-size:14px}
+/* First-session feel (first patch for build 68): the big sale, the purchase pulse, the checklist inside a mission. */
+#saleFeedback.big{font-size:22px;color:#ffe9a8}
+#saleFeedback.big.show{animation:saleBig 1.9s ease-out}
+#saleFeedback .x2{display:inline-block;padding:0 6px;border-radius:9px;background:#c8881f;color:#fff8e2}
+@keyframes saleBig{0%{opacity:0;transform:translateY(10px) scale(.6)}15%{opacity:1;transform:translateY(0) scale(1.25)}30%{transform:scale(1)}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}
+.bought{animation:boughtPulse .24s ease-out}
+@keyframes boughtPulse{40%{transform:scale(1.07)}}
+@keyframes boughtTint{0%,60%{color:#fff}}
+/* Button feel: a quick press, a small springy settle on release. The gold counter bumps once per coin burst. */
+#sheet .action,#awayDialog button,#goalStrip #claimGoal{transition:transform .2s cubic-bezier(.3,1.8,.5,1),box-shadow .12s}
+#sheet .action:active:not(:disabled),#awayDialog button:active,#goalStrip #claimGoal:active{transform:translateY(3px) scale(.98);transition-duration:.05s;transition-timing-function:ease-out}
+#goldHud.bump{animation:bump .18s ease-out}
+/* The open town on the map: a still pool of warm light under it, a bright ring that blooms in once, and a golden name tag. */
+#scene image.lit{filter:drop-shadow(0 0 3px #ffd75e)}
+#townGlow.on{animation:glowIn .45s ease-out}
+@keyframes glowIn{0%{opacity:0}}
+#scene .selected-town{filter:none}
+.no-ambient #townGlow.on,.no-ambient #townGlow.on .glow-ring,.no-ambient #townGlow.on .glow-halo{animation:none}
+#scene .selected-town .town-name-frame{fill:#ffe08a;stroke:#fff6d8;stroke-width:2}
+/* Calmer screen (second visuals round). The top bar keeps its width: fixed-width digits and reserved room for the numbers. */
+#goldValue,#incomeHud{font-variant-numeric:tabular-nums}
+#goldValue{display:inline-block;min-width:4.4ch}
+/* Reward badges arrive with one small pop and then stay still. */
+#shop .badge,#medalsBtn .badge,#chestBtn .badge{animation:badgeIn .45s cubic-bezier(.3,1.6,.5,1) 2}
+@keyframes badgeIn{0%{transform:scale(.4)}60%{transform:scale(1.2)}}
+/* An ordinary sale is a small quiet line under the gold; the first sale and the first boosted sale keep their big moment. */
+#saleFeedback:not(.big){font-size:11px;top:89px}
+#saleFeedback:not(.big).show{animation:saleQuiet 1s ease-out}
+@keyframes saleQuiet{0%{opacity:0;transform:translateY(4px)}20%,70%{opacity:.85;transform:none}100%{opacity:0}}
+/* Town panel: the output line leads; progress bars fill without the travelling shine. */
+#sheet .out-line{font-size:15px;color:#ffe9a8}
+#sheet .job-progress.running>span::after,#sheet .meter .bar i::after{animation:none;background:none}
+/* Blocked mark on a town's name tag (storage full for a while). */
+#scene .block-mark{display:none;pointer-events:none}
+#scene .blocked-town .block-mark{display:block}
+#scene .block-mark circle{fill:#e0762a;stroke:#fff3c0;stroke-width:1.1}
+#scene .block-mark text{fill:#fff;font:900 7.5px Nunito,sans-serif}
+/* Production milestone (x2 output): one shine across the milestone row and a pop on its multiplier, in place of the purchase pulse. */
+#sheet .milestone.hit{position:relative;overflow:hidden;border-radius:8px}
+#sheet .milestone.hit::after{content:'';position:absolute;top:0;bottom:0;left:0;width:45%;pointer-events:none;background:linear-gradient(100deg,transparent,#fff6cfb0,transparent);transform:translateX(-120%);animation:mileSweep .7s ease-out}
+#sheet .milestone.hit b{animation:milePop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes mileSweep{to{transform:translateX(340%)}}
+@keyframes milePop{40%{transform:scale(1.3);background:#c98f2a;color:#fff8e2}}
+.mission-parts{list-style:none;margin:4px 0 8px;padding:0;text-align:left;display:inline-block}
+.mission-parts li{margin:3px 0;font-weight:700}
+.mission-parts li.done{opacity:.6}
+@media (prefers-reduced-motion:reduce){#shop .badge,#medalsBtn .badge,#chestBtn .badge{animation:none}#saleFeedback:not(.big).show{animation:none;opacity:.85}}
+@media (prefers-reduced-motion:reduce){#townGlow.on,#townGlow.on .glow-ring,#townGlow.on .glow-halo,#saleFeedback.big.show,#sheet .milestone.hit::after{animation:none}#saleFeedback.big.show{opacity:1}.bought,#sheet .milestone.hit b{animation:boughtTint .5s}#sheet .action,#awayDialog button,#goalStrip #claimGoal{transition:none}}
+/* Quest strip as one capsule (2026-11-18): the bar runs behind the whole medal and its left end is round, so circle and bar read as one shape. Text gets two lines without clipping. */
+#goalStrip .mpill{box-sizing:border-box;min-height:58px;margin-left:-58px;padding:5px 8px 5px 64px;border-radius:29px;overflow:hidden}
+#goalStrip.early .mpill{min-height:74px;margin-left:-74px;padding:6px 10px 6px 80px;border-radius:37px}
+#goalStrip #missionMedal::before{inset:5px;box-shadow:none}
+#goalStrip .mtitle{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;line-height:1.2;padding:1px 0}
+#goalStrip.early #openGoals{font-size:14px;line-height:1.2}
+#goalStrip #openGoals.hint-target{box-shadow:none!important;outline:none!important;animation:none}
+#goalStrip .mpill:has(#openGoals.hint-target){box-shadow:0 0 0 3px #ffe27a,0 0 22px 6px #ffcf4acc,0 4px 10px #0007;animation:hintPulse 1.8s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){#goalStrip .mpill:has(#openGoals.hint-target){animation:none}}
+
+/* ---------- UI revision 2026-11-22: one button system ----------
+   Utility buttons (World, Settings, Recenter): quiet 44px rounded squares, no label.
+   Feature buttons (Medals, Book, Seals, Chest, Sales x2): 46px round medallion, label underneath.
+   Red badge = something to collect.
+   Every gold upgrade button: price on top, what it gives underneath ("120 → 162"). */
+header button#back,header button#settings,#cameraControls button#centerMap{width:44px!important;min-width:44px;height:44px!important;min-height:44px;border:0;border-radius:11px;background-color:#1d140ad9;background-position:center;background-repeat:no-repeat;background-size:28px;box-shadow:0 0 0 1.5px #e2bd63cc,0 3px 8px #0007}
+#cameraControls button#centerMap{font-size:0!important;color:transparent;background-image:url('../assets/nano-art/compass.webp')}
+#medalsBtn.medallion,#sealsBtn.medallion,#bookBtn.medallion,#adHud .medallion{width:58px;min-width:58px;height:64px;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;cursor:pointer}
+#medalsBtn.medallion::before,#sealsBtn.medallion::before,#bookBtn.medallion::before,#adHud .medallion::before{content:'';position:absolute;inset:auto;left:6px;top:0;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 40% 30%,#4a3420,#1d140a);box-shadow:0 0 0 2px #e2bd63,0 0 0 4px #1d140a,0 4px 10px #0009}
+#medalsBtn.medallion>img,#sealsBtn.medallion>img,#bookBtn.medallion>img,#adHud .medallion>img{position:absolute;inset:auto;left:14px;top:8px;width:30px;height:30px;object-fit:contain}
+#medalsBtn.medallion .blabel,#sealsBtn.medallion .blabel,#bookBtn.medallion .blabel,#adHud .medallion .blabel{position:absolute;left:-8px;right:-8px;top:49px;bottom:auto;transform:none;display:block;padding:0;border-radius:0;background:none;box-shadow:none;font:900 10px/13px Nunito,'Segoe UI',sans-serif;color:#fff;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px #000,0 0 4px #000c}
+#medalsBtn.medallion .badge,#sealsBtn.medallion .badge,#bookBtn.medallion .badge,#adHud .medallion .badge{position:absolute;top:-5px;right:0;left:auto;min-width:19px;height:19px;padding:0 4px;border-radius:10px;background:#d8402c;color:#fff;font:900 11px/19px Nunito,sans-serif;box-shadow:0 0 0 2px #fff3c0,0 2px 4px #0007}
+#medalsBtn.medallion .badge[hidden],#sealsBtn.medallion .badge[hidden],#bookBtn.medallion .badge[hidden],#adHud .medallion .badge[hidden]{display:none}
+/* Top bar: gold and income in one pill. */
+header #goldHud #incomeHud{display:inline-block;min-width:6.5ch;font-size:11px;font-weight:800;text-align:left}
+header #goldHud #incomeHud:empty{display:none}
+/* Upgrade buttons: price, then the gain on a second line. */
+#sheet .action.upgrade:has(.ugain){display:inline-flex;flex-wrap:wrap;align-items:center;justify-content:center;align-content:center;line-height:1.15;padding-top:4px;padding-bottom:4px}
+#sheet .action.upgrade small.ugain{flex-basis:100%;margin:2px 0 0;font:800 9.5px/1.1 Nunito,'Segoe UI',sans-serif;color:#6b4710;opacity:.95;text-shadow:none;white-space:nowrap}
+#sheet .action.upgrade:disabled small.ugain{color:inherit}
+/* Town panel: the storehouse upgrade sits beside the storage bar. */
+#sheet .stock-row{display:flex;align-items:center;gap:8px}
+#sheet .stock-row .meter{flex:1;min-width:0}
+#sheet .stock-row .action.upgrade{flex:none;min-width:98px;min-height:42px;padding-left:8px;padding-right:8px}
+#sheet .stock-row .tip{flex:none}
+/* Upgrades panel rows: level chip under the name; the inn as the last, folded group. */
+#sheet .shop-item .shop-what small .lvchip{margin:0}
+#sheet .shop-item .action.upgrade,#sheet .stock-row .action.upgrade{flex:none;width:112px;min-width:0}
+#sheet .inn-row .shop-what b{display:flex;align-items:center;gap:6px}
+/* Map buttons by purpose: goals column left, ad bonuses right. */
+#goalsCol{position:absolute;left:12px;top:176px;z-index:6;display:flex;flex-direction:column;gap:6px;margin-top:var(--kv-top);transition:translate .2s ease}
+@media(prefers-reduced-motion:reduce){#goalsCol{transition:none}}
+#goalsCol>#medalsBtn.medallion,#goalsCol>#bookBtn.medallion,#goalsCol>#sealsBtn.medallion{position:relative;left:auto;right:auto;top:auto;margin:0;translate:none}
+#adHud{left:auto;right:12px;top:176px;gap:6px}
+/* Town panel: building strip (three pictures), the chosen building's details, then storehouse and caravan. */
+#sheet .bstrip{display:flex;gap:8px;margin:8px 0 6px}
+#sheet .btile{position:relative;flex:1;min-width:0;min-height:0;height:auto;padding:4px 4px 6px;border:0;border-radius:12px;background:#0000004d;box-shadow:inset 0 0 0 1px #e2bd6344;color:var(--cream);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer}
+#sheet .btile svg{width:64px;height:58px;display:block}
+#sheet .btile .chip{font-size:11px}
+#sheet .btile .job-progress{width:86%;height:5px;margin:0}
+#sheet .btile.on{background:#e2bd6326;box-shadow:inset 0 0 0 2px #e2bd63,0 3px 8px #0006}
+#sheet .btile.unbuilt svg{opacity:.55;filter:grayscale(.6)}#sheet .btile.constructing svg{opacity:.85;filter:none}
+#sheet .btile.best::after{content:"★";position:absolute;top:-7px;right:-5px;width:18px;height:18px;border-radius:50%;font-size:12px;line-height:18px;text-align:center;color:#1f4a20;background:#a8f0a0;box-shadow:0 1px 3px #0008}
+#sheet .bdetail{border-radius:12px;background:#00000026;box-shadow:inset 0 0 0 1px #e2bd6333;padding:8px 10px 10px;margin-bottom:4px}
+#sheet .bdetail .bname{font:400 15px Bree,'Bree Serif',serif;color:var(--goldtext);margin-bottom:2px}
+#sheet .sec-h{display:flex;align-items:center;gap:6px;margin:12px 0 2px;font:900 11px Nunito,'Segoe UI',sans-serif;letter-spacing:.5px;text-transform:uppercase;color:var(--goldtext)}
+#sheet .sec-h::after{content:'';flex:1;height:1px;background:#e2bd6333}
+#sheet .sec-h .ico{width:18px;height:18px;margin:0}
+#sheet .trip{border-top:0;padding-top:0;margin-top:2px}
+#sheet .inn-row{margin-top:4px}#sheet .inn-row .shop-item{display:flex;align-items:center;gap:8px}#sheet .inn-row .shop-what{flex:1;min-width:0}#sheet .inn-row .shop-what small{display:flex;align-items:center;gap:6px;color:var(--muted)}
+#sheet .mode-row{display:flex;align-items:center;gap:10px}#sheet .mode-row .buy-mode{flex:0 1 auto}#sheet .mode-row .help{margin-left:auto}
+/* The building chosen in the town panel's strip: a stronger, whiter glow than the rest of the open town (static, no animation). */
+#scene image.lit.chosen{filter:drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 9px #ffc93a)}
+/* Caravan looks (owner, 2026-11-22): tier pictures are side views, not rotated; level 30 dust, 40 + banner, 50 + gold shine.
+   Dust shows only while the caravan travels. The effects stop with the animations switch and under reduced motion. */
+#sheet .caravan-ico[src*="-t"]{transform:none;width:46px}
+#scene .cfx-dust,#scene .cfx-ban{display:none;pointer-events:none}
+#scene [data-look="4"]:is([data-direction="outbound"],[data-direction="returning"]) .cfx-dust,#scene [data-look="5"]:is([data-direction="outbound"],[data-direction="returning"]) .cfx-dust,#scene [data-look="6"]:is([data-direction="outbound"],[data-direction="returning"]) .cfx-dust{display:inline}
+#scene [data-look="5"] .cfx-ban,#scene [data-look="6"] .cfx-ban{display:inline}
+#scene .cfx-dust circle{fill:#e8d9b5;opacity:0;transform-box:fill-box;transform-origin:center;animation:cfxPuff 1.2s ease-out infinite}
+#scene .cfx-dust circle:nth-child(2){animation-delay:.4s}#scene .cfx-dust circle:nth-child(3){animation-delay:.8s}
+@keyframes cfxPuff{0%{opacity:.7;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(-7px,-3px) scale(1.3)}}
+#scene .cfx-ban line{stroke:#5a3b1c;stroke-width:1.1}#scene .cfx-ban path{fill:#c23a2e;stroke:#7a1f17;stroke-width:.5;transform-box:fill-box;transform-origin:left center;animation:cfxFlap 1.6s ease-in-out infinite}
+@keyframes cfxFlap{50%{transform:skewY(7deg) scaleX(.9)}}
+#scene [data-look="6"] image{filter:drop-shadow(0 0 1px #fff6cf) drop-shadow(0 0 3px #ffcf40)}
+.no-ambient #scene .cfx-dust,.no-ambient #scene .cfx-dust *{display:none!important}.no-ambient #scene .cfx-ban path{animation:none}
+@media(prefers-reduced-motion:reduce){#scene .cfx-dust{display:none!important}#scene .cfx-ban path{animation:none}}
+#scene [data-region="snow"] .cfx-dust circle{fill:#f6f9fc}/* snow spray instead of road dust */
+#scene [data-region="desert"] .cfx-dust circle{fill:#e7b97a}/* orange sand puffs */
+#scene [data-region="swamp"] .cfx-dust circle{fill:#7d6c4c}/* small mud flecks */
+#scene [data-region="pass"] .cfx-dust circle{fill:#a39a8c}/* grey grit */#scene [data-region="harbor"] .cfx-dust circle{fill:#f4fbff}/* ships: white wake */
+/* ×2 wheel (owner, 2026-11-22): data-tier 0 none stored (still), 1 old wood (slow) … 4 gold (fast, glow, sparks); gold ring = time left of the hour. */
+#adHud #adBoostBtn .wring{position:absolute;left:2px;top:-4px;width:54px;height:54px;border-radius:50%;background:conic-gradient(#ffd75e var(--p,0%),#0000 0);-webkit-mask:radial-gradient(circle closest-side,#0000 calc(100% - 4px),#000 calc(100% - 3px));mask:radial-gradient(circle closest-side,#0000 calc(100% - 4px),#000 calc(100% - 3px));pointer-events:none;z-index:1}
+#adHud #adBoostBtn[data-tier="0"] .wring{display:none}
+#adHud #adBoostBtn>img{transform-origin:50% 50%}
+#adHud #adBoostBtn[data-tier="1"]>img{animation:wspin 12s linear infinite}#adHud #adBoostBtn[data-tier="2"]>img{animation:wspin 6s linear infinite}
+#adHud #adBoostBtn[data-tier="3"]>img{animation:wspin 3s linear infinite}#adHud #adBoostBtn[data-tier="4"]>img{animation:wspin 1.1s linear infinite}
+@keyframes wspin{to{transform:rotate(360deg)}}
+#adHud #adBoostBtn[data-tier="3"].medallion::before{box-shadow:0 0 0 2px #e2bd63,0 0 0 4px #1d140a,0 0 14px 4px #ffd75eaa}
+#adHud #adBoostBtn[data-tier="4"].medallion::before{box-shadow:0 0 0 2px #fff3c0,0 0 0 4px #1d140a,0 0 20px 8px #ffd75e}
+#adHud #adBoostBtn .wspark{display:none;position:absolute;left:-4px;top:-10px;width:66px;height:66px;border-radius:50%;pointer-events:none;animation:wspin 2.6s linear infinite reverse;z-index:2}
+#adHud #adBoostBtn[data-tier="4"] .wspark{display:block}
+#adHud #adBoostBtn .wspark i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff6cf;box-shadow:0 0 5px 2px #ffd75e}
+#adHud #adBoostBtn .wspark i:nth-child(1){left:31px;top:0}#adHud #adBoostBtn .wspark i:nth-child(2){right:0;top:31px}#adHud #adBoostBtn .wspark i:nth-child(3){left:31px;bottom:0}#adHud #adBoostBtn .wspark i:nth-child(4){left:0;top:31px}
+#adHud #adBoostBtn.wpop>img{animation:wpop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes wpop{0%{scale:.6}100%{scale:1}}
+.no-ambient #adHud #adBoostBtn>img,.no-ambient #adHud #adBoostBtn .wspark{animation:none!important}
+@media(prefers-reduced-motion:reduce){#adHud #adBoostBtn>img,#adHud #adBoostBtn .wspark{animation:none!important}}/* Caravan fleet (2026-11-23): "+1 caravan at level N" under the caravan chips; x2..x4 chip */
+#sheet .fleet-note{display:flex;align-items:center;gap:4px;margin:2px 0 4px;font:700 11px/1.3 Nunito,sans-serif;color:#e9dcb8;opacity:.85}
+#sheet .fleet-note img,#sheet .fleet-note svg{width:14px;height:14px}
+#sheet .chip.fleet{color:#ffe08a}
+/* Seals by progress (2026-11-23): where the next reset's seals come from, under the gain line */
+#empireDialog .seal-parts{display:block;margin-top:4px;font:700 11px/1.4 Nunito,sans-serif;opacity:.8}
+
+/* Level and goal pop-ups readable (owner 2026-11-25): the ribbon is decoration only; title and line sit on a dark plate with a gold rim. */
+.cel-plate{margin-top:-18px;min-width:230px;max-width:290px;padding:14px 18px 16px;border:3px solid #e2a93a;border-radius:14px;background:linear-gradient(#3a2612,#24170b);box-shadow:0 8px 18px #000c,inset 0 0 0 1px #ffe08a55;animation:celUp .45s .3s both}
+.cel-plate b{display:block;font:400 30px Bree,Georgia,serif;color:#ffe08a;text-shadow:0 2px 0 #5e3a0a,0 0 10px #000}
+.cel-plate span{display:block;margin-top:6px;font-weight:900;font-size:16px;line-height:1.3;color:#fff;text-shadow:0 1px 2px #000}
+
+/* Regions 7-8 (2026-11-26). Bottom strip with more towns than fit: scrolls sideways, the market button stays pinned at the right end
+   (navFit() in app.js sets .many). The extra top padding keeps the lifted active button and its frame inside the scroll box. */
+#nav.many{justify-content:flex-start;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;padding-top:13px;padding-right:0}
+#nav.many::-webkit-scrollbar{display:none}
+#nav.many button{width:66px;white-space:normal;text-align:center;line-height:1.05;font-size:9.5px}
+#nav.many button[data-row="market"]{position:sticky;right:0;z-index:3;width:70px;background:#e6cf9c;box-shadow:-10px 0 10px -6px #7a5a2a88;border-radius:0 22px 22px 0}
+/* Ember Coast lava: hot layer fades in and out; the timer sits on the lava field. */
+#scene .lava-hot{transition:opacity 1.2s}
+svg text.lava-tag{font:900 8px Nunito,sans-serif;fill:#fff7e0;stroke:#2a1a10;stroke-width:2.4px;paint-order:stroke}
+svg text.lava-tag.hot{fill:#ffc56a}
+.no-ambient #scene .lava-hot{transition:none}
+#sheet .shared-store{margin:4px 0 0;font-size:12px;font-weight:800;color:#efe2bd;text-align:center}
+#sheet .shared-store.full{color:#ffb27a}
+/* Ember Coast sea crossing (sail() in app.js, 2026-11-26): ship crosses open water, then the overlay fades to the pier. */
+#sailing{position:absolute;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(circle at 50% 42%,#3f7f96,#123544 78%);cursor:pointer;animation:sailIn .45s both}
+#sailing.out{animation:sailOut .5s both}
+#sailing .sail-sea{position:relative;width:100%;height:170px;overflow:hidden;background:linear-gradient(#0000 62%,#1f5a72 62%,#18485bcc 84%,#0000)}
+#sailing .sail-wave{position:absolute;left:0;width:200%;bottom:40px;height:3px;border-radius:2px;background:repeating-linear-gradient(90deg,#0000 0 34px,#d8f0ff38 34px 70px,#0000 70px 96px);animation:sailWave 2.6s linear infinite}
+#sailing .sail-wave.b{bottom:22px;opacity:.7;animation-duration:3.6s}
+#sailing .sail-ship{position:absolute;bottom:44px;left:-40%;width:128px;filter:drop-shadow(0 6px 6px #0006);animation:sailShip 3.6s cubic-bezier(.25,.6,.45,1) both,sailBob 1.5s ease-in-out infinite}
+#sailing p{margin:0;padding:0 24px;text-align:center;font:800 17px Nunito,sans-serif;color:#fff3d0;text-shadow:0 2px 4px #000a}
+@keyframes sailIn{from{opacity:0}}@keyframes sailOut{to{opacity:0}}
+@keyframes sailShip{to{left:calc(62% - 64px)}}
+@keyframes sailBob{50%{transform:translateY(-4px) rotate(-1.5deg)}}
+@keyframes sailWave{to{transform:translateX(-96px)}}
+.no-ambient #sailing .sail-ship,.no-ambient #sailing .sail-wave{animation:none}.no-ambient #sailing .sail-ship{left:calc(50% - 64px)}
+@media (prefers-reduced-motion:reduce){#sailing .sail-ship,#sailing .sail-wave{animation:none}#sailing .sail-ship{left:calc(50% - 64px)}}
+/* "Leave the game?" on Android Back with nothing open (2026-11-26): same look as the New game dialog. */
+#leaveDialog{font-size:13px}#leaveDialog h2{margin:0 0 6px}
+#leaveDialog button{width:100%;padding:12px;margin-top:10px;border:1px solid #796640;border-radius:7px;background:#607346;color:#fff0c7;font-weight:800}
+#leaveDialog #leaveGame{border:0;background:linear-gradient(#f2cd6b,#d9a441);color:#3a2610}
+/* Heat (sweep 6, Codex 054): dust and a flapping banner only on the lead caravan of each route, and the banner only flaps while
+   that caravan is on the road; extra fleet caravans keep a still banner. The chosen building's glow is one shadow (was three). */
+#scene .preview-caravan:not([data-k="0"]) .cfx-dust{display:none!important}
+#scene .preview-caravan:not([data-k="0"]) .cfx-ban path,#scene .preview-caravan:not([data-direction="outbound"]):not([data-direction="returning"]) .cfx-ban path{animation:none}
+#scene image.lit.chosen{filter:drop-shadow(0 0 2.5px #fff3c4)}
